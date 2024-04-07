@@ -1,0 +1,1 @@
+Hi, this is Ishan, trying to complete a ML project, with its topic being Fake News Detection. This project is completely based on the Step-by-step fake-new detection by Mihail Eric, so it's been learn-on-the-go project. A lot of terms, concepts are going to be learnt by me, through this advanced project, so good luck for me!!!!!!
