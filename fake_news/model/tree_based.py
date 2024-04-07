@@ -32,24 +32,24 @@ class RandomForestModel(Model):
         model_cache_path = os.path.join(config["model_output_path"], "model.pkl")
         self.featurizer = TreeFeaturizer(os.path.join(config["featurizer_output_path"], "featurizer.pkl"), config)
         if "evaluate" in config and config["evaluate"] and not os.path.exists(model_cache_path):
-            raise ValueError("Model output path does not exist but in `evaluate` model!")
+            raise ValueError("Model output path does not exist but in `evaluate` mode!")
         if model_cache_path and os.path.exists(model_cache_path):
             LOGGER.info("Loading model from cache...")
             with open(model_cache_path, "rb") as f:
-                self.model = pkl.load(f)
+                self.model = pickle.load(f)
         else:
             LOGGER.info("Initializing model from scratch...")
             self.model = RandomForestClassifier(**self.config["params"])
-
+    
     def train(self,
               train_datapoints: List[Datapoint],
               val_datapoints: List[Datapoint] = None,
-              cache_featurizer: Optionsl[bool] = False) -> None:
+              cache_featurizer: Optional[bool] = False) -> None:
         self.featurizer.fit(train_datapoints)
         if cache_featurizer:
             feature_names = self.featurizer.get_all_feature_names()
-            with open(os.path.join(self.config["mode_output_path"],
-                                    "feature_names.pkl"), "wb") as f:
+            with open(os.path.join(self.config["model_output_path"],
+                                   "feature_names.pkl"), "wb") as f:
                 pickle.dump(feature_names, f)
             self.featurizer.save(os.path.join(self.config["featurizer_output_path"],
                                               "featurizer.pkl"))
@@ -57,7 +57,7 @@ class RandomForestModel(Model):
         LOGGER.info("Featurizing data from scratch...")
         train_features = self.featurizer.featurize(train_datapoints)
         self.model.fit(train_features, train_labels)
-
+    
     def compute_metrics(self, eval_datapoints: List[Datapoint], split: Optional[str] = None) -> Dict:
         expected_labels = [datapoint.label for datapoint in eval_datapoints]
         predicted_proba = self.predict(eval_datapoints)
@@ -65,7 +65,7 @@ class RandomForestModel(Model):
         accuracy = accuracy_score(expected_labels, predicted_labels)
         f1 = f1_score(expected_labels, predicted_labels)
         # ??
-        auc = roc_auc_score(expected_labels, predict_proba[:, 1])
+        auc = roc_auc_score(expected_labels, predicted_proba[:, 1])
         conf_mat = confusion_matrix(expected_labels, predicted_labels)
         tn, fp, fn, tp = conf_mat.ravel()
         split_prefix = "" if split is None else split
@@ -78,7 +78,7 @@ class RandomForestModel(Model):
             f"{split_prefix} false positive": fp,
             f"{split_prefix} true positive": tp,
         }
-
+    
     def predict(self, datapoints: List[Datapoint]) -> np.array:
         # what is features??
         features = self.featurizer.featurize(datapoints)
@@ -86,10 +86,8 @@ class RandomForestModel(Model):
     
     def get_params(self) -> Dict:
         return self.model.get_params()
-
+    
     def save(self, model_cache_path: str) -> None:
         LOGGER.info("Saving model to disk...")
         with open(model_cache_path, "wb") as f:
             pickle.dump(self.model, f)
-
-
