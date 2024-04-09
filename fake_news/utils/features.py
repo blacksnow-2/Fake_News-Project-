@@ -103,7 +103,7 @@ class TreeFeaturizer(object):
                 optimal_credit_bins = json.load(f)
             dict_featurizer = DictVectorizer()
             tfidf_featurizer = TfidfVectorizer()
-
+            
             statement_transformer = FunctionTransformer(extract_statements)
             manual_feature_transformer = FunctionTransformer(partial(extract_manual_features,
                                                                      optimal_credit_bins=optimal_credit_bins))
@@ -119,7 +119,7 @@ class TreeFeaturizer(object):
                 ("manual_features", manual_feature_transformer),
                 ("manual_featurizer", dict_featurizer)
             ])
-
+            
             ngram_feature_pipeline = Pipeline([
                 ("statements", statement_transformer),
                 ("ngram_featurizer", tfidf_featurizer)
@@ -174,7 +174,7 @@ def normalize_labels(datapoints: List[Dict]) -> List[Dict]:
 
 def normalize_and_clean_counts(datapoints: List[Dict]) -> List[Dict]:
     normalized_datapoints = []
-    for idx, datapoint in datapoints:
+    for idx, datapoint in enumerate(datapoints):
         normalized_datapoint = deepcopy(datapoint)
         for count_col in ["barely_true_count",
                           "false_count",
