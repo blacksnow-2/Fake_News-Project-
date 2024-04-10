@@ -49,14 +49,14 @@ if __name__ == "__main__":
     train_datapoints = read_datapoints(args.train_data_path)
     val_datapoints = read_datapoints(args.val_data_path)
     test_datapoints = read_datapoints(args.test_data_path)
-    print(len(train_datapoints))
-    print(len(val_datapoints))
+    # print(len(train_datapoints))
+    # print(len(val_datapoints))
     train_datapoints = normalize_and_clean(train_datapoints)
     val_datapoints = normalize_and_clean(val_datapoints)
     test_datapoints = normalize_and_clean(test_datapoints)
 
-    print(len(train_datapoints))
-    print(len(val_datapoints))
+    # print(len(train_datapoints))
+    # print(len(val_datapoints))
 
     with open(os.path.join(args.output_dir, "cleaned_train_data.json"), "w") as f:
         json.dump(train_datapoints, f)

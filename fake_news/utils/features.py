@@ -16,10 +16,13 @@ from sklearn.pipeline import Pipeline
 from sklearn.pipeline import FeatureUnion
 from sklearn.preprocessing import FunctionTransformer
 
-from utils.constants import CANONICAL_SPEAKER_TITLES
-from utils.constants import CANONICAL_STATE
-from utils.constants import PARTY_AFFILIATIONS
-from utils.constants import SIX_WAY_LABEL_TO_BINARY
+import sys
+sys.path.append('/content')
+sys.path.append('/content/fake_news')
+from fake_news.utils.constants import CANONICAL_SPEAKER_TITLES
+from fake_news.utils.constants import CANONICAL_STATE
+from fake_news.utils.constants import PARTY_AFFILIATIONS
+from fake_news.utils.constants import SIX_WAY_LABEL_TO_BINARY
 
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(filename)s - %(message)s",
@@ -139,7 +142,7 @@ class TreeFeaturizer(object):
         for name, pipeline in self.combined_featurizer.transformer_list:
             # Extract the last transformer in each pipeline like dict_featurizer for thr first one
             final_pipe_name, final_pipe_transformer = pipeline.steps[-1]
-            all_feature_names.extend(final_pipe_transformer.get_feature_names())
+            all_feature_names.extend(final_pipe_transformer.get_feature_names_out())
         return all_feature_names
     
     def fit(self, datapoints: List[Datapoint]) -> None:
@@ -165,9 +168,11 @@ def compute_bin_idx(val: float, bins: List[float]) -> int:
 def normalize_labels(datapoints: List[Dict]) -> List[Dict]:
     normalized_datapoints = []
     for datapoint in datapoints:
+        if datapoint["label"] == None:
+          continue
         normalized_datapoint = deepcopy(datapoint)
         # .lower().strip() should be outside of the bracket.
-        normalized_datapoint["label"] = SIX_WAY_LABEL_TO_BINARY[datapoint["label"].lower().strip()]
+        normalized_datapoint["label"] = SIX_WAY_LABEL_TO_BINARY[datapoint["label".lower().strip()]]
         normalized_datapoints.append(normalized_datapoint)
     return normalized_datapoints
 
@@ -176,6 +181,8 @@ def normalize_and_clean_counts(datapoints: List[Dict]) -> List[Dict]:
     normalized_datapoints = []
     for idx, datapoint in enumerate(datapoints):
         normalized_datapoint = deepcopy(datapoint)
+        if any(normalized_datapoint.get(count_col) is None for count_col in ["barely_true_count", "false_count", "half_true_count", "mostly_true_count", "pants_fire_count"]):
+          continue
         for count_col in ["barely_true_count",
                           "false_count",
                           "half_true_count",

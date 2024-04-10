@@ -69,7 +69,7 @@ if __name__ == "__main__":
             config["featurizer_output_path"] = os.path.join(base_dir, config["featurizer_output_path"])
             model = RandomForestModel(config)
         else:
-            # ?? config["model"] or config['model]
+            # ?? config["model"] or config['model']
             raise ValueError(f"Invalid model type {config['model']} provided")
         
         if not config["evaluate"]:
