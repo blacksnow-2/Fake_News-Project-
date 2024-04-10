@@ -1,6 +1,9 @@
 import json
 from typing import List
 
+import sys
+sys.path.append('/content')
+sys.path.append('/content/fake_news')
 from fake_news.utils.features import Datapoint
 
 def read_json_data(datapath: str) -> List[Datapoint]:

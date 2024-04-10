@@ -24,6 +24,6 @@ if __name__ == "__main__":
                         "mostly_true_count",
                         "pants_fire_count"]:
         optimal_credit_bins[credit_name] = list(np.histogram_bin_edges(train_df[credit_name], bins=10))
-    with open(args.output_dir, "w") as f:
+    with open(args.output_path, "w") as f:
         print(optimal_credit_bins)
         json.dump(optimal_credit_bins, f)

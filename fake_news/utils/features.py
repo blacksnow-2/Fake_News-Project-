@@ -16,10 +16,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.pipeline import FeatureUnion
 from sklearn.preprocessing import FunctionTransformer
 
-from fake_news.utils.constants import CANONICAL_SPEAKER_TITLES
-from fake_news.utils.constants import CANONICAL_STATE
-from fake_news.utils.constants import PARTY_AFFILIATIONS
-from fake_news.utils.constants import SIX_WAY_LABEL_TO_BINARY
+from utils.constants import CANONICAL_SPEAKER_TITLES
+from utils.constants import CANONICAL_STATE
+from utils.constants import PARTY_AFFILIATIONS
+from utils.constants import SIX_WAY_LABEL_TO_BINARY
 
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(filename)s - %(message)s",

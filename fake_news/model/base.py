@@ -6,6 +6,9 @@ from typing import Optional
 
 import numpy as np
 
+import sys
+sys.path.append('/content')
+sys.path.append('/content/fake_news')
 from fake_news.utils.features import Datapoint
 
 

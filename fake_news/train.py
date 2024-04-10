@@ -9,6 +9,10 @@ import mlflow
 import numpy as np
 import torch
 
+import sys
+sys.path.append('/content')
+sys.path.append('/content/fake_news')
+
 # from fake_news.model.transformer_based import RobertaModel
 from fake_news.model.tree_based import RandomForestModel
 from fake_news.utils.reader import read_json_data
@@ -36,7 +40,7 @@ def set_random_seed(val: int = 1) -> None:
 
 if __name__ == "__main__":
     args = read_args()
-    with open(args.config_file) as f:
+    with open(os.path.abspath(args.config_file)) as f:
         config = json.load(f)
     
     set_random_seed(42)
@@ -66,7 +70,7 @@ if __name__ == "__main__":
             model = RandomForestModel(config)
         else:
             # ?? config["model"] or config['model]
-            raise ValueError(f"Invalid model type {config["model"]} provided")
+            raise ValueError(f"Invalid model type {config['model']} provided")
         
         if not config["evaluate"]:
             LOGGER.info("Training model...")

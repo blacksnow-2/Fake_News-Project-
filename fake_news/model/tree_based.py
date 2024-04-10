@@ -16,7 +16,11 @@ from sklearn.metrics import f1_score
 # https://www.evidentlyai.com/classification-metrics/explain-roc-curve
 from sklearn.metrics import roc_auc_score
 
-from fake_news.model.base import Model
+from model.base import Model
+
+import sys
+sys.path.append('/content')
+sys.path.append('/content/fake_news')
 from fake_news.utils.features import Datapoint
 from fake_news.utils.features import TreeFeaturizer
 
