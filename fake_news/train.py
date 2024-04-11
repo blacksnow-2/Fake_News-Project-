@@ -13,7 +13,7 @@ import sys
 sys.path.append('/content')
 sys.path.append('/content/fake_news')
 
-# from fake_news.model.transformer_based import RobertaModel
+from fake_news.model.transformer_based import RobertaModel
 from fake_news.model.tree_based import RandomForestModel
 from fake_news.utils.reader import read_json_data
 
@@ -68,6 +68,8 @@ if __name__ == "__main__":
         if config["model"] == "random_forest":
             config["featurizer_output_path"] = os.path.join(base_dir, config["featurizer_output_path"])
             model = RandomForestModel(config)
+        elif config["model"] == "roberta":
+            model = RobertaModel(config)
         else:
             # ?? config["model"] or config['model']
             raise ValueError(f"Invalid model type {config['model']} provided")

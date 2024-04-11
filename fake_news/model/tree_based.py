@@ -60,6 +60,23 @@ class RandomForestModel(Model):
         train_labels = [datapoint.label for datapoint in train_datapoints]
         LOGGER.info("Featurizing data from scratch...")
         train_features = self.featurizer.featurize(train_datapoints)
+        # New additions for applying the featurizer on val_datapoints...
+        if val_datapoints is not None:
+            self.config["evaluate_val"] = True
+            self.val_featurizer = TreeFeaturizer(os.path.join(self.config["featurizer_output_path"], "val_featurizer.pkl"), self.config)
+            self.val_featurizer.fit(val_datapoints)
+            val_labels = [datapoint.label for datapoint in val_datapoints]
+            val_features = self.featurizer.featurize(val_datapoints)
+            val_feature_names = self.val_featurizer.get_all_feature_names()
+            with open(os.path.join(self.config["model_output_path"],
+                                   "val_feature_names.pkl"), "wb") as f:
+                pickle.dump(val_feature_names, f)
+            self.val_featurizer.save(os.path.join(self.config["featurizer_output_path"],
+                                              "val_featurizer.pkl"))
+            val_data = (val_features, val_labels)
+            with open(os.path.join(os.path.dirname(self.config["val_data_path"]), "val_features.pkl"), "wb") as f:
+                pickle.dump(val_data, f)
+            self.config["evaluate_val"] = False
         self.model.fit(train_features, train_labels)
     
     def compute_metrics(self, eval_datapoints: List[Datapoint], split: Optional[str] = None) -> Dict:

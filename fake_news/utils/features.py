@@ -85,7 +85,7 @@ class TreeFeaturizer(object):
     def __init__(self, featurizer_cache_path: str, config: Optional[Dict] = None):
         # NOTE: Here you can add feature caching which helps if it's too expensive
         # to compute features from scratch for each run
-        if os.path.exists(featurizer_cache_path):
+        if os.path.exists(featurizer_cache_path) and not config["evaluate_val"]:
             LOGGER.info("Loading featurizer from cache...")
             # r: 
             # This mode opens the file for reading in text mode. Text mode is the default mode for opening files.
@@ -102,8 +102,12 @@ class TreeFeaturizer(object):
             # to go up the directory level given a path. Like applying it twice on a\b\c\d returns a\b.
             base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             # Load optimal credit bins?
-            with open(os.path.join(base_dir, config["credit_bins_path"])) as f:
-                optimal_credit_bins = json.load(f)
+            if not config["evaluate_val"]:
+              with open(os.path.join(base_dir, config["credit_bins_path"])) as f:
+                  optimal_credit_bins = json.load(f)
+            else:
+              with open(os.path.join(base_dir, config["val_credit_bins_path"])) as f:
+                  optimal_credit_bins = json.load(f)
             dict_featurizer = DictVectorizer()
             tfidf_featurizer = TfidfVectorizer()
             
@@ -142,6 +146,7 @@ class TreeFeaturizer(object):
         for name, pipeline in self.combined_featurizer.transformer_list:
             # Extract the last transformer in each pipeline like dict_featurizer for thr first one
             final_pipe_name, final_pipe_transformer = pipeline.steps[-1]
+            # Updated function below.
             all_feature_names.extend(final_pipe_transformer.get_feature_names_out())
         return all_feature_names
     

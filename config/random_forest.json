@@ -5,7 +5,9 @@
   "test_data_path": "data/processed/cleaned_test_data.json",
   "featurizer_output_path": "model_checkpoints/random_forest",
   "credit_bins_path": "data/processed/optimal_credit_bins.json",
+  "val_credit_bins_path": "data/processed/val_optimal_credit_bins.json",
   "model_output_path": "model_checkpoints/random_forest",
+  "evaluate_val": false,
   "evaluate": false,
   "params": {
 
