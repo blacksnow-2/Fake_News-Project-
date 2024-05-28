@@ -9,7 +9,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
-# Precision = TP/ (TP+FP). Recall = TP(TP+FN). f1 score is harmonic mean of Precision and recall
+# Precision = TP/ (TP+FP). Recall = TP/(TP+FN). f1 score is harmonic mean of Precision and recall
 # f1 = 2 * (1 / (1/Precision + 1/Recall))
 from sklearn.metrics import f1_score
 # Below for roc_auc_score
